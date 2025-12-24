@@ -1,0 +1,98 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gateway-service
+
+  config:
+    import: "optional:configserver:"
+
+  cloud:
+    config:
+      enabled: false
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      # Supprimez la configuration globalcors ici et utilisez plutôt la configuration Java
+
+      routes:
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/customers/**
+          filters:
+            # Optionnel : pour retirer le préfixe /api
+            - StripPrefix=1
+
+        - id: inventory-service
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/api/products/**
+          filters:
+            # Optionnel : pour retirer le préfixe /api
+            - StripPrefix=1
+
+# Configuration CORS via Spring Security (recommandée)
+cors:
+  allowed-origins: "http://localhost:4201"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "http://localhost:4200"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        allow-credentials: true
+  endpoint:
+    info:
+      enabled: true
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+    build:
+      enabled: true
+
+info:
+  app:
+    name: "API Gateway Service"
+    version: "1.0.0"
+    description: "Spring Cloud Gateway for Microservices"
+  gateway:
+    port: 8888
+    type: "Spring Cloud Gateway"
+    routes:
+      customer-service: "/api/customers/**"
+      inventory-service: "/api/products/**"
+  eureka:
+    server: "http://localhost:8761/eureka"
+    enabled: true
+  technical:
+    spring-boot: "3.5.7"
+    spring-cloud: "2025.0.0"
+    java: "17"
+  status: "ACTIVE"
+  team: "Gateway Team"
+  custom:
+    startup-time: "2024-12-03T22:00:00Z"
+    environment: "development"
