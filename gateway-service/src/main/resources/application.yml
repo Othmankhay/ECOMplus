@@ -8,6 +8,16 @@ spring:
   config:
     import: "optional:configserver:"
 
+  # Keycloak OAuth2 Resource Server Configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Keycloak issuer URI - adjust the realm name as needed
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/ecommerce}
+          # Alternative: use jwk-set-uri directly
+          # jwk-set-uri: http://localhost:8080/realms/ecommerce/protocol/openid-connect/certs
+
   cloud:
     config:
       enabled: false
@@ -35,6 +45,27 @@ spring:
             - Path=/api/products/**
           filters:
             # Optionnel : pour retirer le préfixe /api
+            - StripPrefix=1
+
+        - id: chatbot-service
+          uri: lb://CHATBOT-SERVICE
+          predicates:
+            - Path=/api/chatbot/**
+          filters:
+            - StripPrefix=1
+
+        - id: kafka-producer-service
+          uri: lb://KAFKA-PRODUCER-SERVICE
+          predicates:
+            - Path=/api/kafka/**
+          filters:
+            - StripPrefix=1
+
+        - id: kafka-streams-service
+          uri: lb://KAFKA-STREAMS-SERVICE
+          predicates:
+            - Path=/api/analytics/**
+          filters:
             - StripPrefix=1
 
 # Configuration CORS via Spring Security (recommandée)
