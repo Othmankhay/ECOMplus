@@ -1,0 +1,158 @@
+{
+  "realm": "ecommerce",
+  "enabled": true,
+  "displayName": "ECOMplus E-Commerce",
+  "displayNameHtml": "<h1>ECOMplus</h1>",
+  "accessTokenLifespan": 3600,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "USER",
+        "description": "Regular user role"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Administrator role"
+      },
+      {
+        "name": "MANAGER",
+        "description": "Manager role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@ecomplus.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["ADMIN", "USER"]
+    },
+    {
+      "username": "user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Regular",
+      "lastName": "User",
+      "email": "user@ecomplus.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["USER"]
+    },
+    {
+      "username": "manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Manager",
+      "lastName": "User",
+      "email": "manager@ecomplus.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "manager123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["MANAGER", "USER"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "ecom-frontend",
+      "name": "ECOMplus Frontend Application",
+      "description": "Angular Frontend Client",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "rootUrl": "http://localhost:4201",
+      "baseUrl": "/",
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:4201/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:4201"
+      ],
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "ecom-gateway",
+      "name": "ECOMplus API Gateway",
+      "description": "Spring Cloud Gateway Client",
+      "enabled": true,
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect"
+    },
+    {
+      "clientId": "ecom-services",
+      "name": "ECOMplus Microservices",
+      "description": "Backend Microservices Client",
+      "enabled": true,
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect"
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "ecom-scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "user.attribute": "roles",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ]
+}
